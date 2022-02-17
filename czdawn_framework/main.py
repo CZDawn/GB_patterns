@@ -28,9 +28,11 @@ class CzdawnFramework:
         if method == 'POST':
             data = PostRequests().get_request_params(environ)
             request['data'] = decode_value(data)
+            print(f"Мы получили POST запрос: {decode_value(data)}")
         if method == 'GET':
             params = GetRequests().get_request_params(environ)
             request['request_params'] = decode_value(params)
+            print(f"Мы получили GET запрос с параметрами: {decode_value(params)}")
 
         if path in self.routes_list:
             view = self.routes_list[path]

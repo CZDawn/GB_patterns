@@ -1,5 +1,5 @@
 '''
-This method contains common functions for other project packages,
+This module contains common functions for other project packages,
 for not to copy the code (DRY).
 '''
 
@@ -32,10 +32,10 @@ def get_wsgi_input_data(environ) -> bytes:
 
 def decode_value(data):
     new_data = {}
-    for key, value in data.items():
-        value = bytes(value.replace('%', '=').replace('+', ' '), 'UTF-8')
-        decode_value_to_str = decodestring(value).decode('UTF-8')
-        new_data[key] = decode_value_to_str
+    for k, v in data.items():
+        value = bytes(v.replace('%', '=').replace('+', ' '), 'utf-8')
+        decode_value_to_str = decodestring(value).decode(encoding='utf-8')
+        new_data[k] = decode_value_to_str
     return new_data
 
 def get_content_type(file_path, content_types_map=CONTENT_TYPES_MAP):
