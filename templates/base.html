@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% block title %}{% endblock %}
+    <meta name="description" content="website description" />
+    <meta name="keywords" content="website keywords, website keywords" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="{{ static }}css/style.css" />
+</head>
+<body>
+    <div id="main">
+        {% block page_header %}{% endblock %}
+        {% block page_content %}{% endblock %}
+        {% block page_footer %}{% endblock %}
+    </div>
+</body>
+</html>
