@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Themes list</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <a href="/podcasts/">назад</a>
+            
+            <h1>Список тем подкастов категории "{{category.name}}"</h1>
+            <ul>
+                {% for item in objects_list %}
+                    <li>
+                        "{{item.name}}": <span>количество подкастов: {{item.podcast_count()}}</span>
+                        <br>
+                        <a href="/podcasts_list/?category_id={{category.id}}&theme_id={{item.id}}">Список подкастов по теме "{{item.name}}"</a>
+                        <br>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div>
+                <li><a href="/create_theme/?category_id={{category.id}}">Создать тему</a></li>
+	        </div>
+            
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}

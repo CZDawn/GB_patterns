@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Categories list</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <a href="/">назад</a> 
+            <h1>Список категорий подкастов</h1>
+            <ul>
+                {% for item in objects_list %}
+                <li>
+                    "{{item.name}}": <span>количество подкастов в категории: {{item.podcast_count()}}</span><br>
+                    <a href="/themes_list/?category_id={{item.id}}">Список тем подкастов в категории "{{item.name}}"</a><br>
+                </li>
+                {% endfor %}
+            </ul>
+            <div>
+		        <a href="/create_category/">Создать категорию</a>
+	        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}

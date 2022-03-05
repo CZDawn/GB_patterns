@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Podcasts list</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <a href="/themes_list/?category_id={{category.id}}">назад</a>
+            
+            <h1>Список подкастов по теме "{{theme.name}}" категории "{{category.name}}"</h1>
+            <ul>
+                {% for item in objects_list %}
+                    <li>
+                        Название подкаста: {{item.name}}<br>
+                        Автор: {{item.author}}<br>
+                        <br>
+                        <br>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div>
+                <li><a href="/create_podcast/?category_id={{category.id}}&theme_id={{theme.id}}">Создать подкаст</a></li>
+	        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}

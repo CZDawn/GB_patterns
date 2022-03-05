@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Create theme</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <!-- insert the page content here -->
+            <h1>Создание темы подкастов категории "{{category.name}}"</h1>
+            <div>
+                <a href="/themes_list/?category_id={{category.id}}">назад</a>
+            </div>
+            <br>
+            <br>
+            <form method="post">
+                <input type="text" name="name" placeholder="Название темы">
+                <input type="text" name="category_id" value="{{category.id}}" class="visually_hidden">
+                <button type="submit">Сохранить и вернуться на главную</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}
