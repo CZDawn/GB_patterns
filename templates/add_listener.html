@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Add listener by podcastt</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+	        <ul>
+		        <li>
+			        <a href="/listeners_list/">Список слушателей</a>
+		        </li>
+		        <li>
+			        <a href="/create_listener/">Создать слушателя</a>
+		        </li>
+	        </ul>
+            <h1>Добавление слушателея на подкаст</h1>
+            <form method="post">
+                <select size="3" name="podcast_name">
+                    {% for item in podcasts %}
+                        <option value="{{item.name}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
+                <select size="3" name="listener_name">
+                    {% for item in listeners %}
+                        <option value="{{item.name}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Записать</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}

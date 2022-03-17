@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Listeners list</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <ul>
+		        <li>
+			        <a href="/create_listener/">Создать слушателя</a>
+		        </li>
+		        <li>
+			        <a href="/add_listener/">Добавить слушателя в подкаст</a>
+		        </li>
+	        </ul>
+            <h1>Список слушателей</h1>
+            <ul>
+                {% for item in objects_list %}
+                    <li>
+                        {{item.name}} {{item.surname}}
+                        {% for podcast in item.podcasts %}
+                            {{podcast.name}}
+                        {% endfor %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}

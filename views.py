@@ -1,10 +1,13 @@
 from czdawn_framework.templator import render
 from patterns.creational_patterns import Engine, Logger
 from patterns.structural_patterns import RouteDecorator, CountTimeForMethodDecorator
+from patterns.behavioral_patterns import CreateView, ListView, BaseSerializer, \
+                                         PushNotifier, ConsoleWriter
 
 
 engine_obj = Engine()
-logger = Logger('main')
+logger = Logger('main', ConsoleWriter())
+push_notifier = PushNotifier()
 routes = {}
 
 @RouteDecorator(routes=routes, url='/')
@@ -170,6 +173,7 @@ class PodcastsList:
 
 @RouteDecorator(routes=routes, url='/copy_podcast/')
 class CopyPodcast:
+    @CountTimeForMethodDecorator('Copy podcast')
     def __call__(self, request):
         name = request['request_params']['name']
         old_podcast = engine_obj.find_podcast_by_name(name)
@@ -182,4 +186,54 @@ class CopyPodcast:
         return '200 OK', render('podcasts_list.html',
                                 objects_list=engine_obj.podcasts,
                                 category=new_podcast.category.name)
+
+
+@RouteDecorator(routes=routes, url='/listeners_list/')
+class ListenersListView(ListView):
+    queryset = engine_obj.listeners
+    template_name = 'listeners_list.html'
+
+
+@RouteDecorator(routes=routes, url='/create_listener/')
+class ListenerCreateView(CreateView):
+    template_name = 'create_listener.html'
+
+    def create_object(self, data: dict):
+        name = data['listener_name']
+        surname = data['listener_surname']
+        email = data['email']
+
+        name = engine_obj.decode_value(name)
+        surname = engine_obj.decode_value(surname)
+        email = engine_obj.decode_value(email)
+
+        new_listener = engine_obj.create_user('listener', name, surname, email)
+        engine_obj.listeners.append(new_listener)
+
+
+@RouteDecorator(routes=routes, url='/add_listener/')
+class AddListenerByPodcastCreateView(CreateView):
+    template_name = 'add_listener.html'
+
+    def get_template_context_data(self):
+        context = super().get_template_context_data()
+        context['podcasts'] = engine_obj.podcasts
+        context['listeners'] = engine_obj.listeners
+        return context
+
+    def create_object(self, data: dict):
+        podcast_name = data['podcast_name']
+        podcast_name = engine_obj.decode_value(podcast_name)
+        podcast = engine_obj.find_podcast_by_name(podcast_name)
+        listener_name = data['listener_name']
+        listener_name = engine_obj.decode_value(listener_name)
+        listener = engine_obj.find_listener_by_name(listener_name)
+        podcast.add_listener(listener)
+
+
+@RouteDecorator(routes=routes, url='/api/')
+class PodcastApi:
+    @CountTimeForMethodDecorator('Podcast Api')
+    def __call__(self, request):
+        return '200 OK', BaseSerializer(engine_obj.podcasts).save()
 

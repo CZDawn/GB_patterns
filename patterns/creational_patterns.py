@@ -1,30 +1,37 @@
 from copy import deepcopy
 from quopri import decodestring
+from .behavioral_patterns import FileWriter, AbstractSubject
 
 
 class User:
 
-    def __init__(self, name, surname):
+    def __init__(self, name, surname, email=None, pseudonym=None, profession=None):
         self.name = name
         self.surname = surname
+        self.email = email
+        self.pseudonym = pseudonym
+        self.profession = profession
 
 
 class Author(User):
 
-    def __init__(self, pseudonym):
+    def __init__(self, name,surname,  pseudonym):
         self.pseudonym = pseudonym
+        super().__init__(name, surname, self.pseudonym)
 
 
 class Speaker(User):
 
-    def __init__(self, profession):
+    def __init__(self, name, surname, profession):
         self.profession = profession
+        super().__init__(name, surname, self.profession)
 
 
 class Listener(User):
 
-    def __init__(self, email):
-        self.email = email
+    def __init__(self, name, surname, email):
+        self.podcasts = []
+        super().__init__(name, surname, email)
 
 
 class UserFactory:
@@ -35,8 +42,13 @@ class UserFactory:
     }
 
     @classmethod
-    def create(cls, type_):
-        return cls.types[type_]()
+    def create(cls, type_, name, surname, email=None, pseudonym=None, profession=None):
+        if type_ == 'listener':
+            return cls.types[type_](name, surname, email)
+        elif type_ == 'speaker':
+            return cls.types[type_](name, surname, profession)
+        else:
+            return cls.types[type_](name, surname, pseudonym)
 
 
 class PodcastPrototype:
@@ -45,7 +57,7 @@ class PodcastPrototype:
         return deepcopy(self)
 
 
-class Podcast(PodcastPrototype):
+class Podcast(PodcastPrototype, AbstractSubject):
 
     def __init__(self, name, category, theme, author):
         self.name = name
@@ -54,6 +66,16 @@ class Podcast(PodcastPrototype):
         self.author = author
         self.category.podcasts.append(self)
         self.theme.podcasts.append(self)
+        self.listeners = []
+        super().__init__()
+
+    def __getitem__(self, item):
+        return self.listeners[item]
+
+    def add_listener(self, listener: Listener):
+        self.listeners.append(listener)
+        listener.podcasts.append(self)
+        self.notify()
 
 
 class BroadcastPodcast(Podcast):
@@ -107,6 +129,7 @@ class Theme:
 
 
 class Engine:
+
     def __init__(self):
         self.speakers = []
         self.listeners = []
@@ -115,8 +138,8 @@ class Engine:
         self.podcasts = []
 
     @staticmethod
-    def create_user(type_):
-        return UserFactory.create(type_)
+    def create_user(type_, name, surname, email=None, pseudonym=None, profession=None):
+        return UserFactory.create(type_, name, surname, email=None, pseudonym=None, profession=None)
 
     @staticmethod
     def create_category(name):
@@ -159,6 +182,11 @@ class Engine:
             if item.name == name:
                 return item
 
+    def find_listener_by_name(self, name) -> Listener:
+        for item in self.listeners:
+            if item.name == name:
+                return item
+
     @staticmethod
     def decode_value(val):
         val_b = bytes(val.replace('%', '=').replace("+", " "), 'UTF-8')
@@ -167,6 +195,7 @@ class Engine:
 
 
 class SingletonByName(type):
+
     def __init__(cls, name, bases, attrs, **kwargs):
         super().__init__(name, bases, attrs)
         cls.__instance = {}
@@ -185,10 +214,12 @@ class SingletonByName(type):
 
 
 class Logger(metaclass=SingletonByName):
-    def __init__(self, name):
-        self.name = name
 
-    @staticmethod
-    def log(text):
-        print('log--->', text)
+    def __init__(self, name, writer):
+        self.name = name
+        self.writer = writer
+
+    def log(self, text):
+        text = f'log---> {text}'
+        self.writer.write(text)
 

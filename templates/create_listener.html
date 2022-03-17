@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Create listener</title>
+{% endblock %}
+{% block page_header %}
+    {% include "inc-header.html" %}
+{% endblock %}
+{% block page_content %}
+    <div id="site_content">
+        {% include "inc-sidebar.html" %}
+        <div id="content">
+            <!-- insert the page content here -->
+            <h1>Создание слушателя</h1>
+            <div>
+                <a href="/listeners_list/">Список слушателей</a>
+            </div>
+            <br>
+            <br>
+            <form method="post">
+                <input type="text" name="listener_name" placeholder="Имя">
+                <input type="text" name="listener_surname" placeholder="Фамилия">
+                <input type="email" name="email" placeholder="Email">
+                <input type="text" name="pseudonym" placeholder="Псевдоним">
+                <input type="text" name="profession" placeholder="Профессия">
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_footer %}
+    {% include "inc-footer.html" %}
+{% endblock %}
