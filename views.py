@@ -1,13 +1,17 @@
 from czdawn_framework.templator import render
-from patterns.creational_patterns import Engine, Logger
+from patterns.creational_patterns import Engine, Logger, MapperRegistry
 from patterns.structural_patterns import RouteDecorator, CountTimeForMethodDecorator
 from patterns.behavioral_patterns import CreateView, ListView, BaseSerializer, \
                                          PushNotifier, ConsoleWriter
+from patterns.architectural_system_pattern_unit_of_work import UnitOfWork
 
 
 engine_obj = Engine()
 logger = Logger('main', ConsoleWriter())
 push_notifier = PushNotifier()
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
+
 routes = {}
 
 @RouteDecorator(routes=routes, url='/')
@@ -190,8 +194,12 @@ class CopyPodcast:
 
 @RouteDecorator(routes=routes, url='/listeners_list/')
 class ListenersListView(ListView):
-    queryset = engine_obj.listeners
+    #queryset = engine_obj.listeners
     template_name = 'listeners_list.html'
+
+    def get_queryset(self):
+        mapper = MapperRegistry.get_current_mapper('listener')
+        return mapper.all()
 
 
 @RouteDecorator(routes=routes, url='/create_listener/')
@@ -209,6 +217,8 @@ class ListenerCreateView(CreateView):
 
         new_listener = engine_obj.create_user('listener', name, surname, email)
         engine_obj.listeners.append(new_listener)
+        new_listener.mark_new()
+        UnitOfWork.get_current().commit()
 
 
 @RouteDecorator(routes=routes, url='/add_listener/')

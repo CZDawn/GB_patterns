@@ -1,0 +1,60 @@
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS listener;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    email VARCHAR(100),
+    pseudonym VARCHAR(100),
+    profession VARCHAR(200)
+);
+
+CREATE TABLE listener (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    email VARCHAR(100)
+);
+
+CREATE TABLE speaker (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    profession VARCHAR(200)
+);
+
+CREATE TABLE author (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    pseudonym VARCHAR(100)
+);
+
+CREATE TABLE category (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(100)
+);
+
+CREATE TABLE theme (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(100),
+    categoryId INT,
+    FOREIGN KEY (categoryId) REFERENCES category (id) ON DELETE CASCADE
+);
+
+CREATE TABLE podcast (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR(100),
+    categoryId INT,
+    themeId INT,
+    authorId INT,
+    FOREIGN KEY (categoryId) REFERENCES category (id) ON DELETE CASCADE,
+    FOREIGN KEY (themeId) REFERENCES theme (id) ON DELETE CASCADE,
+    FOREIGN KEY (authorId) REFERENCES author (id) ON DELETE CASCADE
+);
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
