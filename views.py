@@ -37,42 +37,9 @@ class Contact:
         return '200 OK', render('contact.html',
                              date=request.get('date', None))
 
-"""
-@RouteDecorator(routes=routes, url='/create_category/')
-class CreateCategory:
-    @CountTimeForMethodDecorator('Create category')
-    def __call__(self, request):
-        if request['method'] == 'POST':
-            data = request['data']
-            name = data['name']
-            name = engine_obj.decode_value(name)
-
-            category = engine_obj.find_category_by_name(name)
-
-            if category:
-                return '200 OK', render('categories_list.html',
-                                        objects_list=engine_obj.categories)
-            else:
-                new_category = engine_obj.create_category(name)
-                engine_obj.categories.append(new_category)
-
-                return '200 OK', render('categories_list.html',
-                                        objects_list=engine_obj.categories)
-        else:
-            return '200 OK', render('create_category.html')
-
-
-@RouteDecorator(routes=routes, url='/podcasts/')
-class CategoriesList:
-    @CountTimeForMethodDecorator('Categories list')
-    def __call__(self, request):
-        logger.log('Список категорий подкастов')
-        return '200 OK', render('categories_list.html',
-                                objects_list=engine_obj.categories)
-"""
 
 @RouteDecorator(routes=routes, url='/create_category/')
-class CreateCategory(CreateView):
+class CategoryCreateView(CreateView):
     template_name = 'create_category.html'
 
     def create_object(self, data: dict):
@@ -85,7 +52,7 @@ class CreateCategory(CreateView):
         UnitOfWork.get_current().commit()
 
 @RouteDecorator(routes=routes, url='/podcasts/')
-class CategoriesList(ListView):
+class CategoriesListView(ListView):
     template_name = 'categories_list.html'
 
     def get_queryset(self):
