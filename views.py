@@ -37,7 +37,7 @@ class Contact:
         return '200 OK', render('contact.html',
                              date=request.get('date', None))
 
-
+"""
 @RouteDecorator(routes=routes, url='/create_category/')
 class CreateCategory:
     @CountTimeForMethodDecorator('Create category')
@@ -69,6 +69,28 @@ class CategoriesList:
         logger.log('Список категорий подкастов')
         return '200 OK', render('categories_list.html',
                                 objects_list=engine_obj.categories)
+"""
+
+@RouteDecorator(routes=routes, url='/create_category/')
+class CreateCategory(CreateView):
+    template_name = 'create_category.html'
+
+    def create_object(self, data: dict):
+        name = data['name']
+        name = engine_obj.decode_value(name)
+
+        new_category = engine_obj.create_category(name)
+        engine_obj.categories.append(new_category)
+        new_category.mark_new()
+        UnitOfWork.get_current().commit()
+
+@RouteDecorator(routes=routes, url='/podcasts/')
+class CategoriesList(ListView):
+    template_name = 'categories_list.html'
+
+    def get_queryset(self):
+        mapper = MapperRegistry.get_current_mapper('category')
+        return mapper.all()
 
 
 @RouteDecorator(routes=routes, url='/create_theme/')
@@ -194,7 +216,6 @@ class CopyPodcast:
 
 @RouteDecorator(routes=routes, url='/listeners_list/')
 class ListenersListView(ListView):
-    #queryset = engine_obj.listeners
     template_name = 'listeners_list.html'
 
     def get_queryset(self):

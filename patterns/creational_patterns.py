@@ -99,7 +99,7 @@ class PodcastFactory:
         return cls.types[type_](name, category, theme, author)
 
 
-class Category:
+class Category(DomainObject):
     auto_id = 0
 
     def __init__(self, name):
@@ -343,7 +343,7 @@ class MapperRegistry:
     def get_mapper(obj):
         if isinstance(obj, Listener):
             return ListenerMapper(connection)
-        elif isinstance(obj, Cattegory):
+        elif isinstance(obj, Category):
             return CategoryMapper(connection)
 
     @staticmethod
