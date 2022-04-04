@@ -2,8 +2,6 @@
 This module implement logic of templator jinja2 work.
 '''
 
-#from os.path import join
-#from jinja2 import FileSystemLoader, Environment
 from jinja2 import Template, FileSystemLoader
 from jinja2.environment import Environment
 
